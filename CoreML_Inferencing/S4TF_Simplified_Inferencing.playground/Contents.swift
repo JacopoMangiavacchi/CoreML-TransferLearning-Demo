@@ -34,27 +34,27 @@ func inferenceCoreML(model: MLModel, numerical: [Float], cat1: Int, cat2: Int) -
     return Float(prediction.featureValue(for: "output")!.multiArrayValue![0].floatValue)
 }
 
-let (coreModel, compiledModelUrl) = compileCoreML(path: "/Users/jacopo/S4TF-EmbeddingMultiInput/s4tf_house_simplified_trained_model.mlmodel")
+let (coreModel, compiledModelUrl) = compileCoreML(path: "/Users/jacopo/S4TF-EmbeddingMultiInput/model/s4tf_house_simplified_trained_model.mlmodel")
 
 // print(coreModel.modelDescription)
 
-let numerical_0: [Float] = [  10.127699, -0.56208307,   1.3125796,   1.4050479,  -0.8863933,   1.2248203,  -1.2581577,
-2.3634233,   0.9779133,  0.12650238,   1.6906141]
+let numerical_0: [Float] = [-0.4000649,  -0.49060422,  -0.37006438,  -0.29516807,    0.2773472,     1.021877,
+-0.6626676,  -0.11198587,    1.1625932,   0.40813962, -0.047246937]
 let cat1_0 = 0
-let cat2_0 = 8
+let cat2_0 = 4
 
 print(inferenceCoreML(model: coreModel, numerical: numerical_0, cat1: cat1_0, cat2: cat2_0))
 
-let numerical_1: [Float] = [   1.541963, -0.56208307,   1.3125796,   0.7150559, -0.93426037,   0.7972452,  -1.0169381,
-2.3634233,   0.9779133,   -2.180478,  0.39479825]
+let numerical_1: [Float] = [2.421373, -0.49060422,  0.99975175,   1.2359748,   -2.246887,    1.124838,  -1.1245025,
+1.5638397,   0.8357405,  0.42682302,     2.17172]
 let cat1_1 = 0
 let cat2_1 = 8
 
 print(inferenceCoreML(model: coreModel, numerical: numerical_1, cat1: cat1_1, cat2: cat2_1))
 
-let numerical_2: [Float] = [-0.29233322, -0.56208307,   2.7879307,   0.6713855,  -0.4761084,   0.6558696, -0.94413173,
-2.7039568,   0.9328142,  0.42111015,  0.28535435]
+let numerical_2: [Float] = [-0.32639477,  0.38105497,  -1.0291269,   0.7851385,  -0.9889262, -0.19590291,  -0.8761533,
+-0.82510316,  -2.5261788,   0.3761753, -0.29949686]
 let cat1_2 = 0
-let cat2_2 = 3
+let cat2_2 = 4
 
 print(inferenceCoreML(model: coreModel, numerical: numerical_2, cat1: cat1_2, cat2: cat2_2))
