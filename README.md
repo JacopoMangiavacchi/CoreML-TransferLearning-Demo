@@ -1,6 +1,6 @@
-# S4TF-EmbeddingMultiInput
+# CoreML-EmbeddingMultiInputTraining
 
-Swift for TensorFlow Notebook to train a Regression model from tabular data with multiple Numerical and Categorical Features using Embedding and MultiInput.
+Swift for TensorFlow Notebook to train and export to CoreML a Regression model from tabular data with multiple Numerical and Categorical Features using Embedding and MultiInput.
 
 ## Dataset
 
@@ -72,3 +72,82 @@ struct RegressionModel: Module {
 
 var model = RegressionModel()
 ```
+
+## SwiftCoreMLTools Export Trained Model
+
+```swift
+let coremlModel = Model(version: 4,
+                        shortDescription: "Regression",
+                        author: "Jacopo Mangiavacchi",
+                        license: "MIT",
+                        userDefined: ["SwiftCoremltoolsVersion" : "0.0.6"]) {
+    Input(name: "numericalInput", shape: [11])
+    Input(name: "categoricalInput1", shape: [1])
+    Input(name: "categoricalInput2", shape: [1])
+    Output(name: "output", shape: [1])
+    NeuralNetwork {
+        Embedding(name: "embedding1",
+                     input: ["categoricalInput1"],
+                     output: ["outEmbedding1"],
+                     weight: model.embedding1.embeddings.transposed().flattened().scalars,
+                     inputDim: 2,
+                     outputChannels: 2)
+        Permute(name: "permute1",
+                     input: ["outEmbedding1"],
+                     output: ["outPermute1"],
+                     axis: [2, 1, 0, 3])
+        Flatten(name: "flatten1",
+                     input: ["outPermute1"],
+                     output: ["outFlatten1"],
+                     mode: .last)
+        Embedding(name: "embedding2",
+                     input: ["categoricalInput2"],
+                     output: ["outEmbedding2"],
+                     weight: model.embedding2.embeddings.transposed().flattened().scalars,
+                     inputDim: 9,
+                     outputChannels: 5)
+        Permute(name: "permute2",
+                     input: ["outEmbedding2"],
+                     output: ["outPermute2"],
+                     axis: [2, 1, 0, 3])
+        Flatten(name: "flatten2",
+                     input: ["outPermute2"],
+                     output: ["outFlatten2"],
+                     mode: .last)
+        Concat(name: "concat",
+                     input: ["numericalInput", "outFlatten1", "outFlatten2"],
+                     output: ["outConcat"])
+        InnerProduct(name: "dense1",
+                     input: ["outConcat"],
+                     output: ["outDense1"],
+                     weight: model.allInputConcatLayer.weight.transposed().flattened().scalars,
+                     bias: model.allInputConcatLayer.bias.flattened().scalars,
+                     inputChannels: 11 + 2 + 5,
+                     outputChannels: 64)
+        ReLu(name: "Relu1",
+             input: ["outDense1"],
+             output: ["outRelu1"])
+        InnerProduct(name: "dense2",
+                     input: ["outRelu1"],
+                     output: ["outDense2"],
+                     weight: model.hiddenLayer.weight.transposed().flattened().scalars,
+                     bias: model.hiddenLayer.bias.flattened().scalars,
+                     inputChannels: 64,
+                     outputChannels: 32)
+        ReLu(name: "Relu2",
+             input: ["outDense2"],
+             output: ["outRelu2"])
+        InnerProduct(name: "dense3",
+                     input: ["outRelu2"],
+                     output: ["output"],
+                     weight: model.outputLayer.weight.transposed().flattened().scalars,
+                     bias: model.outputLayer.bias.flattened().scalars,
+                     inputChannels: 32,
+                     outputChannels: 1)
+    }
+}
+```
+
+## SwiftCoreMLTools Export Trainable Model
+
+WIP

@@ -34,7 +34,7 @@ func inferenceCoreML(model: MLModel, numerical: [Float], cat1: Int, cat2: Int) -
     return Float(prediction.featureValue(for: "output")!.multiArrayValue![0].floatValue)
 }
 
-let (coreModel, compiledModelUrl) = compileCoreML(path: "/Users/jacopo/S4TF-EmbeddingMultiInput/model/s4tf_house_simplified_trained_model.mlmodel")
+let (coreModel, compiledModelUrl) = compileCoreML(path: "/Users/jacopo/CoreML-EmbeddingMultiInputTraining/model/s4tf_house_simplified_trained_model.mlmodel")
 
 // print(coreModel.modelDescription)
 
