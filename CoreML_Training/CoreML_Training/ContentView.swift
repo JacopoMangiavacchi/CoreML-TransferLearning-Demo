@@ -7,10 +7,13 @@
 //
 
 import SwiftUI
+import CoreML
 
 struct ContentView: View {
+    @State var data = HousingData()
+
     var body: some View {
-        Text("Hello, World!")
+        Text("\(data.prepareTrainingBatch().count)")
     }
 }
 

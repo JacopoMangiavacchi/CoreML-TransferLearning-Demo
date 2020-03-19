@@ -20,6 +20,10 @@ public struct HousingData {
     public let numTrainRecords: Int
     public let numTestRecords: Int
     
+    public let allCategoriesValues: [[Int32]]
+    public let mean: [Float]
+    public let std: [Float]
+    
     public let xNumericalTrain: [[Float]]
     public let xCategoricalTrain: [[Int32]]
     public let yTrain: [[Float]]
@@ -136,9 +140,6 @@ public struct HousingData {
             }
         }
         
-//        print(mean)
-//        print(std)
-
         // Initialize class properties
         self.numRecords = numRecords
         self.numColumns = numColumns
@@ -147,6 +148,9 @@ public struct HousingData {
         self.numLabels = numLabels
         self.numTrainRecords = numTrainRecords
         self.numTestRecords = numTestRecords
+        self.allCategoriesValues = allCategoriesValues
+        self.mean = mean
+        self.std = std
 
         self.xNumericalTrain = xTrainNormalized
         self.xCategoricalTrain = xCategoricalAllTrain
@@ -157,29 +161,32 @@ public struct HousingData {
         self.yTest = yAllTest
     }
     
-    // TODO: Pass parameter name for input and output
-    // TODO: Add also categorical inputs 
-    func prepareTrainingBatch() -> MLBatchProvider {
+    func prepareTrainingBatch(numericalInput: String = "numericalInput", categoricalInput1: String = "categoricalInput1", categoricalInput2: String = "categoricalInput2", output_true: String = "output_true") -> MLBatchProvider {
         var featureProviders = [MLFeatureProvider]()
 
-        let inputName = "input"
-        let outputName = "output_true"
-
         for r in 0..<numTrainRecords {
-            let inputMultiArr = try! MLMultiArray(shape: [NSNumber(value: numNumericalFeatures)], dataType: .float32)
+            let numericalInputMultiArr = try! MLMultiArray(shape: [NSNumber(value: numNumericalFeatures)], dataType: .float32)
+            let categoricalInput1MultiArr = try! MLMultiArray(shape: [NSNumber(value: 1)], dataType: .int32)
+            let categoricalInput2MultiArr = try! MLMultiArray(shape: [NSNumber(value: 1)], dataType: .int32)
             let outputMultiArr = try! MLMultiArray(shape: [NSNumber(value: numLabels)], dataType: .float32)
 
             for c in 0..<numNumericalFeatures {
-                inputMultiArr[c] = NSNumber(value: xNumericalTrain[r][c])
+                numericalInputMultiArr[c] = NSNumber(value: xNumericalTrain[r][c])
             }
 
+            categoricalInput1MultiArr[0] = NSNumber(value: xCategoricalTrain[0][r])
+            categoricalInput2MultiArr[0] = NSNumber(value: xCategoricalTrain[1][r])
             outputMultiArr[0] = NSNumber(value: yTrain[r][0])
 
-            let inputValue = MLFeatureValue(multiArray: inputMultiArr)
+            let numericalInputValue = MLFeatureValue(multiArray: numericalInputMultiArr)
+            let categorical1InputValue = MLFeatureValue(multiArray: categoricalInput1MultiArr)
+            let categorical2InputValue = MLFeatureValue(multiArray: categoricalInput2MultiArr)
             let outputValue = MLFeatureValue(multiArray: outputMultiArr)
 
-            let dataPointFeatures: [String: MLFeatureValue] = [inputName: inputValue,
-                                                               outputName: outputValue]
+            let dataPointFeatures: [String: MLFeatureValue] = [numericalInput: numericalInputValue,
+                                                               categoricalInput1: categorical1InputValue,
+                                                               categoricalInput2: categorical2InputValue,
+                                                               output_true: outputValue]
 
             if let provider = try? MLDictionaryFeatureProvider(dictionary: dataPointFeatures) {
                 featureProviders.append(provider)
