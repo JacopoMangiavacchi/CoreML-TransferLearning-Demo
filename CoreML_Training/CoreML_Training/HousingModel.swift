@@ -17,8 +17,8 @@ public struct HousingModel {
     var trained = false
     var data = HousingData()
     
-    mutating func randomizeData() {
-        data = HousingData()
+    mutating func randomizeData(trainPercentage: Float = 0.8) {
+        data = HousingData(trainPercentage: trainPercentage)
     }
     
     func prepareTrainingBatch() -> MLBatchProvider {
@@ -26,8 +26,8 @@ public struct HousingModel {
 
         for r in 0..<data.numTrainRecords {
             let numericalInputMultiArr = try! MLMultiArray(shape: [NSNumber(value: data.numNumericalFeatures)], dataType: .float32)
-            let categoricalInput1MultiArr = try! MLMultiArray(shape: [NSNumber(value: 1)], dataType: .int32)
-            let categoricalInput2MultiArr = try! MLMultiArray(shape: [NSNumber(value: 1)], dataType: .int32)
+            let categoricalInput1MultiArr = try! MLMultiArray(shape: [NSNumber(value: 1)], dataType: .float32)
+            let categoricalInput2MultiArr = try! MLMultiArray(shape: [NSNumber(value: 1)], dataType: .float32)
             let outputMultiArr = try! MLMultiArray(shape: [NSNumber(value: data.numLabels)], dataType: .float32)
 
             for c in 0..<data.numNumericalFeatures {

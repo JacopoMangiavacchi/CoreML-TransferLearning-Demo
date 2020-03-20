@@ -9,8 +9,7 @@
 import Foundation
 
 public struct HousingData {
-    let trainPercentage:Float = 0.8
-    
+    public let trainPercentage: Float
     public let numRecords: Int
     public let numColumns: Int
     public let numCategoricalFeatures: Int
@@ -40,7 +39,7 @@ public struct HousingData {
         return result
     }
     
-    public init() {
+    public init(trainPercentage:Float = 0.8) {
         // Load Data
         let filePath = Bundle.main.url(forResource: "housing", withExtension: "csv")
         let data = try! String(contentsOf: filePath!, encoding: String.Encoding.utf8)
@@ -140,6 +139,7 @@ public struct HousingData {
         }
         
         // Initialize class properties
+        self.trainPercentage = trainPercentage
         self.numRecords = numRecords
         self.numColumns = numColumns
         self.numCategoricalFeatures = numCategoricalFeatures

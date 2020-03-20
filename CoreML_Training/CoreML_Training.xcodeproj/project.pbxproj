@@ -17,6 +17,7 @@
 		EA1B1F762423359800DF2306 /* HousingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1B1F752423359800DF2306 /* HousingModel.swift */; };
 		EA1B1F7B24233ABD00DF2306 /* s4tf_house_simplified_trainable_model.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = EA1B1F7A24233ABD00DF2306 /* s4tf_house_simplified_trainable_model.mlmodel */; };
 		EA1B1F7D2423C54600DF2306 /* HousingData.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1B1F7C2423C54600DF2306 /* HousingData.swift */; };
+		EA1B1F7F242448DB00DF2306 /* s4tf_house_simplified_trained_model.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = EA1B1F7E242448DB00DF2306 /* s4tf_house_simplified_trained_model.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +34,7 @@
 		EA1B1F752423359800DF2306 /* HousingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HousingModel.swift; sourceTree = "<group>"; };
 		EA1B1F7A24233ABD00DF2306 /* s4tf_house_simplified_trainable_model.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = s4tf_house_simplified_trainable_model.mlmodel; path = ../../model/s4tf_house_simplified_trainable_model.mlmodel; sourceTree = "<group>"; };
 		EA1B1F7C2423C54600DF2306 /* HousingData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HousingData.swift; sourceTree = "<group>"; };
+		EA1B1F7E242448DB00DF2306 /* s4tf_house_simplified_trained_model.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = s4tf_house_simplified_trained_model.mlmodel; path = ../../model/s4tf_house_simplified_trained_model.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,13 +68,14 @@
 			isa = PBXGroup;
 			children = (
 				EA1B1F73242332CF00DF2306 /* housing.csv */,
+				EA1B1F7E242448DB00DF2306 /* s4tf_house_simplified_trained_model.mlmodel */,
 				EA1B1F7A24233ABD00DF2306 /* s4tf_house_simplified_trainable_model.mlmodel */,
 				EA1B1F7C2423C54600DF2306 /* HousingData.swift */,
 				EA1B1F752423359800DF2306 /* HousingModel.swift */,
+				EA1B1F622423325A00DF2306 /* ContentView.swift */,
 				EA1B1F722423329800DF2306 /* CoreML_Training.entitlements */,
 				EA1B1F5E2423325A00DF2306 /* AppDelegate.swift */,
 				EA1B1F602423325A00DF2306 /* SceneDelegate.swift */,
-				EA1B1F622423325A00DF2306 /* ContentView.swift */,
 				EA1B1F642423326000DF2306 /* Assets.xcassets */,
 				EA1B1F692423326000DF2306 /* LaunchScreen.storyboard */,
 				EA1B1F6C2423326000DF2306 /* Info.plist */,
@@ -168,6 +171,7 @@
 				EA1B1F762423359800DF2306 /* HousingModel.swift in Sources */,
 				EA1B1F7D2423C54600DF2306 /* HousingData.swift in Sources */,
 				EA1B1F5F2423325A00DF2306 /* AppDelegate.swift in Sources */,
+				EA1B1F7F242448DB00DF2306 /* s4tf_house_simplified_trained_model.mlmodel in Sources */,
 				EA1B1F612423325A00DF2306 /* SceneDelegate.swift in Sources */,
 				EA1B1F7B24233ABD00DF2306 /* s4tf_house_simplified_trainable_model.mlmodel in Sources */,
 				EA1B1F632423325A00DF2306 /* ContentView.swift in Sources */,
