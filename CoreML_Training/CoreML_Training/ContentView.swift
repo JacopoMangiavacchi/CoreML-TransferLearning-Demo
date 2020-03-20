@@ -74,7 +74,14 @@ struct ContentView: View {
                 }
             }
             Section(header: Text("Training")) {
-                Text("TODO")
+                HStack {
+                    Text(self.model.status)
+                    Spacer()
+                    Button(action: {}) {
+                        Text("Train").foregroundColor(.red)
+                    }.onTapGesture {
+                    }
+                }
             }
             Section(header: Text("Inferencing")) {
                 HStack {

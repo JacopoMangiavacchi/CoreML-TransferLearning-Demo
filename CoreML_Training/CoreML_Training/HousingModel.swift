@@ -15,10 +15,12 @@ public struct HousingModel {
     let output: String = "output"
     let output_true: String = "output_true"
     
-    var trained = false
     var data = HousingData()
     var defaultModel: MLModel? = s4tf_house_simplified_trained_model().model
     var retrainedModel: MLModel? = s4tf_house_simplified_trainable_model().model
+    
+    var trained: Bool = false
+    var status: String = "Not trained yet"
     
     mutating func randomizeData(trainPercentage: Float = 0.8) {
         data = HousingData(trainPercentage: trainPercentage)
