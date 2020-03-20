@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import SwiftUI
 import CoreML
 
-public class HousingModel {
+public class HousingModel : ObservableObject {
     let numericalInput: String = "numericalInput"
     let categoricalInput1: String = "categoricalInput1"
     let categoricalInput2: String = "categoricalInput2"
@@ -19,8 +20,8 @@ public class HousingModel {
     var defaultModel: MLModel? = s4tf_house_simplified_trained_model().model
     var retrainedModel: MLModel? = s4tf_house_simplified_trainable_model().model
     
-    var trained: Bool = false
-    var status: String = "Not trained yet"
+    @Published var trained: Bool = false
+    @Published var status: String = "Not trained yet"
     
     func randomizeData(trainPercentage: Float = 0.8) {
         data = HousingData(trainPercentage: trainPercentage)

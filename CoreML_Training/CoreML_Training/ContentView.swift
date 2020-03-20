@@ -10,7 +10,7 @@ import SwiftUI
 import CoreML
 
 struct ContentView: View {
-    @State var model = HousingModel()
+    @ObservedObject var model = HousingModel()
     
     @State var changeRatio = false
     @State var newRatio = 0.8
