@@ -10,10 +10,10 @@ import SwiftUI
 import CoreML
 
 struct ContentView: View {
-    @State var data = HousingData()
+    @State var model = HousingModel()
 
     var body: some View {
-        Text("\(data.prepareTrainingBatch().count)")
+        Text("\(model.prepareTrainingBatch().count)")
     }
 }
 

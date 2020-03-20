@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import CoreML
 
 public struct HousingData {
     let trainPercentage:Float = 0.8
@@ -159,40 +158,5 @@ public struct HousingData {
         self.xNumericalTest = xTestNormalized
         self.xCategoricalTest = xCategoricalAllTest
         self.yTest = yAllTest
-    }
-    
-    func prepareTrainingBatch(numericalInput: String = "numericalInput", categoricalInput1: String = "categoricalInput1", categoricalInput2: String = "categoricalInput2", output_true: String = "output_true") -> MLBatchProvider {
-        var featureProviders = [MLFeatureProvider]()
-
-        for r in 0..<numTrainRecords {
-            let numericalInputMultiArr = try! MLMultiArray(shape: [NSNumber(value: numNumericalFeatures)], dataType: .float32)
-            let categoricalInput1MultiArr = try! MLMultiArray(shape: [NSNumber(value: 1)], dataType: .int32)
-            let categoricalInput2MultiArr = try! MLMultiArray(shape: [NSNumber(value: 1)], dataType: .int32)
-            let outputMultiArr = try! MLMultiArray(shape: [NSNumber(value: numLabels)], dataType: .float32)
-
-            for c in 0..<numNumericalFeatures {
-                numericalInputMultiArr[c] = NSNumber(value: xNumericalTrain[r][c])
-            }
-
-            categoricalInput1MultiArr[0] = NSNumber(value: xCategoricalTrain[0][r])
-            categoricalInput2MultiArr[0] = NSNumber(value: xCategoricalTrain[1][r])
-            outputMultiArr[0] = NSNumber(value: yTrain[r][0])
-
-            let numericalInputValue = MLFeatureValue(multiArray: numericalInputMultiArr)
-            let categorical1InputValue = MLFeatureValue(multiArray: categoricalInput1MultiArr)
-            let categorical2InputValue = MLFeatureValue(multiArray: categoricalInput2MultiArr)
-            let outputValue = MLFeatureValue(multiArray: outputMultiArr)
-
-            let dataPointFeatures: [String: MLFeatureValue] = [numericalInput: numericalInputValue,
-                                                               categoricalInput1: categorical1InputValue,
-                                                               categoricalInput2: categorical2InputValue,
-                                                               output_true: outputValue]
-
-            if let provider = try? MLDictionaryFeatureProvider(dictionary: dataPointFeatures) {
-                featureProviders.append(provider)
-            }
-        }
-
-        return MLArrayBatchProvider(array: featureProviders)
     }
 }
