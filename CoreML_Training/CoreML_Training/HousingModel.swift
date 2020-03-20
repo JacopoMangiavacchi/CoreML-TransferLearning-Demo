@@ -8,7 +8,7 @@
 import Foundation
 import CoreML
 
-public struct HousingModel {
+public class HousingModel {
     let numericalInput: String = "numericalInput"
     let categoricalInput1: String = "categoricalInput1"
     let categoricalInput2: String = "categoricalInput2"
@@ -22,7 +22,7 @@ public struct HousingModel {
     var trained: Bool = false
     var status: String = "Not trained yet"
     
-    mutating func randomizeData(trainPercentage: Float = 0.8) {
+    func randomizeData(trainPercentage: Float = 0.8) {
         data = HousingData(trainPercentage: trainPercentage)
     }
 
@@ -108,73 +108,85 @@ public struct HousingModel {
         return try! (MLModel(contentsOf: compiledUrl), compiledUrl)
     }
 
-//    public func train(url: URL, retrainedCoreMLFilePath: String) {
-//        let configuration = MLModelConfiguration()
-//        configuration.computeUnits = .all
-//        //configuration.parameters = [.epochs : 100]
-//
-//        let progressHandler = { (context: MLUpdateContext) in
-//            switch context.event {
-//            case .trainingBegin:
-//                print("Training begin")
-//
-//            case .miniBatchEnd:
-//                break
-////                let batchIndex = context.metrics[.miniBatchIndex] as! Int
-////                let batchLoss = context.metrics[.lossValue] as! Double
-////                print("Mini batch \(batchIndex), loss: \(batchLoss)")
-//
-//            case .epochEnd:
-//                let epochIndex = context.metrics[.epochIndex] as! Int
-//                let trainLoss = context.metrics[.lossValue] as! Double
-//                print("Epoch \(epochIndex) end with loss \(trainLoss)")
-//
-//            default:
-//                print("Unknown event")
-//            }
-//
-//    //        print(context.model.modelDescription.parameterDescriptionsByKey)
-//
-//    //        do {
-//    //            let multiArray = try context.model.parameterValue(for: MLParameterKey.weights.scoped(to: "dense_1")) as! MLMultiArray
-//    //            print(multiArray.shape)
-//    //        } catch {
-//    //            print(error)
-//    //        }
-//        }
-//
-//        let completionHandler = { (context: MLUpdateContext) in
-//            print("Training completed with state \(context.task.state.rawValue)")
-//            print("CoreML Error: \(context.task.error.debugDescription)")
-//
-//            if context.task.state != .completed {
-//                print("Failed")
-//                return
-//            }
-//
-//            let trainLoss = context.metrics[.lossValue] as! Double
-//            print("Final loss: \(trainLoss)")
-//
-//
+    public func train() {
+        self.trained = false
+        self.status = "Training starting"
+        
+        let configuration = MLModelConfiguration()
+        configuration.computeUnits = .all
+        //configuration.parameters = [.epochs : 100]
+
+        let progressHandler = { (context: MLUpdateContext) in
+            switch context.event {
+            case .trainingBegin:
+                print("Training begin")
+                self.status = "Training begin"
+
+            case .miniBatchEnd:
+                break
+//                let batchIndex = context.metrics[.miniBatchIndex] as! Int
+//                let batchLoss = context.metrics[.lossValue] as! Double
+//                print("Mini batch \(batchIndex), loss: \(batchLoss)")
+
+            case .epochEnd:
+                let epochIndex = context.metrics[.epochIndex] as! Int
+                let trainLoss = context.metrics[.lossValue] as! Double
+                print("Epoch \(epochIndex) end with loss \(trainLoss)")
+                self.status = "Epoch \(epochIndex) end with loss \(trainLoss)"
+
+
+            default:
+                print("Unknown event")
+            }
+
+    //        print(context.model.modelDescription.parameterDescriptionsByKey)
+
+    //        do {
+    //            let multiArray = try context.model.parameterValue(for: MLParameterKey.weights.scoped(to: "dense_1")) as! MLMultiArray
+    //            print(multiArray.shape)
+    //        } catch {
+    //            print(error)
+    //        }
+        }
+
+        let completionHandler = { (context: MLUpdateContext) in
+            print("Training completed with state \(context.task.state.rawValue)")
+            print("CoreML Error: \(context.task.error.debugDescription)")
+            self.status = "Training completed with state \(context.task.state.rawValue)"
+
+            if context.task.state != .completed {
+                print("Failed")
+                self.status = "Training Failed"
+                return
+            }
+
+            let trainLoss = context.metrics[.lossValue] as! Double
+            print("Final loss: \(trainLoss)")
+            self.status = "Training completed with loss: \(trainLoss)"
+
+            self.retrainedModel = context.model
+            self.trained = true
+
 //            let updatedModel = context.model
 //            let updatedModelURL = URL(fileURLWithPath: retrainedCoreMLFilePath)
 //            try! updatedModel.write(to: updatedModelURL)
-//
-//            print("Model Trained!")
-//            print("Press return to continue..")
-//        }
-//
-//        let handlers = MLUpdateProgressHandlers(
-//                            forEvents: [.trainingBegin, .miniBatchEnd, .epochEnd],
-//                            progressHandler: progressHandler,
-//                            completionHandler: completionHandler)
-//
-//
-//        let updateTask = try! MLUpdateTask(forModelAt: url,
-//                                           trainingData: prepareTrainingBatch(),
-//                                           configuration: configuration,
-//                                           progressHandlers: handlers)
-//
-//        updateTask.resume()
-//    }
+
+            print("Model Trained!")
+        }
+
+        let handlers = MLUpdateProgressHandlers(
+                            forEvents: [.trainingBegin, .miniBatchEnd, .epochEnd],
+                            progressHandler: progressHandler,
+                            completionHandler: completionHandler)
+
+//        let modelPath = Bundle.main.url(forResource: "s4tf_house_simplified_trainable_model", withExtension: "mlmodel")
+        let modelPath = s4tf_house_simplified_trainable_model.urlOfModelInThisBundle
+
+        let updateTask = try! MLUpdateTask(forModelAt: modelPath,
+                                           trainingData: prepareTrainingBatch(),
+                                           configuration: configuration,
+                                           progressHandlers: handlers)
+
+        updateTask.resume()
+    }
 }

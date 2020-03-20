@@ -80,6 +80,7 @@ struct ContentView: View {
                     Button(action: {}) {
                         Text("Train").foregroundColor(.red)
                     }.onTapGesture {
+                        self.model.train()
                     }
                 }
             }
