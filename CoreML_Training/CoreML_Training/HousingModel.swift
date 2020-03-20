@@ -17,13 +17,24 @@ public struct HousingModel {
     
     var trained = false
     var data = HousingData()
-    var model: MLModel?
+    var defaultModel: MLModel?
+    var retrainedModel: MLModel?
     
     mutating func randomizeData(trainPercentage: Float = 0.8) {
         data = HousingData(trainPercentage: trainPercentage)
     }
+
+    public func inference(retrained: Bool = false, testSample: Int) -> Float {
+        guard testSample >= 0 && testSample < data.numTestRecords else { return -1 }
+        
+        let xNumerical: [Float] = data.xNumericalTest[testSample]
+        let xCategorical1: Float = Float(data.xCategoricalTest[0][testSample])
+        let xCategorical2: Float = Float(data.xCategoricalTest[1][testSample])
+        
+        return inference(retrained: retrained, xNumerical: xNumerical, xCategorical1: xCategorical1, xCategorical2: xCategorical2)
+    }
     
-    public func inference(xNumerical: [Float], xCategorical1: Float, xCategorical2: Float) -> Float {
+    public func inference(retrained: Bool = false, xNumerical: [Float], xCategorical1: Float, xCategorical2: Float) -> Float {
         let numericalInputMultiArr = try! MLMultiArray(shape: [NSNumber(value: data.numNumericalFeatures)], dataType: .float32)
         let categoricalInput1MultiArr = try! MLMultiArray(shape: [NSNumber(value: 1)], dataType: .float32)
         let categoricalInput2MultiArr = try! MLMultiArray(shape: [NSNumber(value: 1)], dataType: .float32)
@@ -45,6 +56,8 @@ public struct HousingModel {
 
         let provider = try! MLDictionaryFeatureProvider(dictionary: dataPointFeatures)
 
+        let model = retrained ? retrainedModel : defaultModel
+        
         guard let prediction = try! model?.prediction(from: provider) else { return -1 }
 
         return Float(prediction.featureValue(for: output)!.multiArrayValue![0].floatValue)
