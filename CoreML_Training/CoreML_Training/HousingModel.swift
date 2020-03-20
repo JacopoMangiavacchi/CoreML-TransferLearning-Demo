@@ -12,15 +12,44 @@ public struct HousingModel {
     let numericalInput: String = "numericalInput"
     let categoricalInput1: String = "categoricalInput1"
     let categoricalInput2: String = "categoricalInput2"
+    let output: String = "output"
     let output_true: String = "output_true"
     
     var trained = false
     var data = HousingData()
+    var model: MLModel?
     
     mutating func randomizeData(trainPercentage: Float = 0.8) {
         data = HousingData(trainPercentage: trainPercentage)
     }
     
+    public func inference(xNumerical: [Float], xCategorical1: Float, xCategorical2: Float) -> Float {
+        let numericalInputMultiArr = try! MLMultiArray(shape: [NSNumber(value: data.numNumericalFeatures)], dataType: .float32)
+        let categoricalInput1MultiArr = try! MLMultiArray(shape: [NSNumber(value: 1)], dataType: .float32)
+        let categoricalInput2MultiArr = try! MLMultiArray(shape: [NSNumber(value: 1)], dataType: .float32)
+        
+        for c in 0..<data.numNumericalFeatures {
+            numericalInputMultiArr[c] = NSNumber(value: xNumerical[c])
+        }
+
+        categoricalInput1MultiArr[0] = NSNumber(value: xCategorical1)
+        categoricalInput2MultiArr[0] = NSNumber(value: xCategorical2)
+
+        let numericalInputValue = MLFeatureValue(multiArray: numericalInputMultiArr)
+        let categorical1InputValue = MLFeatureValue(multiArray: categoricalInput1MultiArr)
+        let categorical2InputValue = MLFeatureValue(multiArray: categoricalInput2MultiArr)
+
+        let dataPointFeatures: [String: MLFeatureValue] = [numericalInput: numericalInputValue,
+                                                           categoricalInput1: categorical1InputValue,
+                                                           categoricalInput2: categorical2InputValue]
+
+        let provider = try! MLDictionaryFeatureProvider(dictionary: dataPointFeatures)
+
+        guard let prediction = try! model?.prediction(from: provider) else { return -1 }
+
+        return Float(prediction.featureValue(for: output)!.multiArrayValue![0].floatValue)
+    }
+
     func prepareTrainingBatch() -> MLBatchProvider {
         var featureProviders = [MLFeatureProvider]()
 
@@ -132,22 +161,5 @@ public struct HousingModel {
 //                                           progressHandlers: handlers)
 //
 //        updateTask.resume()
-//    }
-//
-//    public func inferenceCoreML(model: MLModel, x: [Float]) -> Float {
-//        let inputName = "input"
-//
-//        let multiArr = try! MLMultiArray(shape: [13], dataType: .float32)
-//        for c in 0..<(numColumns-1) {
-//            multiArr[c] = NSNumber(value: x[c])
-//        }
-//
-//        let inputValue = MLFeatureValue(multiArray: multiArr)
-//        let dataPointFeatures: [String: MLFeatureValue] = [inputName: inputValue]
-//        let provider = try! MLDictionaryFeatureProvider(dictionary: dataPointFeatures)
-//
-//        let prediction = try! model.prediction(from: provider)
-//
-//        return Float(prediction.featureValue(for: "output")!.multiArrayValue![0].floatValue)
 //    }
 }
