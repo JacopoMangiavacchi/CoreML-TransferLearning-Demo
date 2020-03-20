@@ -21,8 +21,8 @@ struct ContentView: View {
                 HStack {
                     VStack {
                         if changeRatio {
-                            Text("\(model.data.numTrainRecords) Train Samples")
-                            Text("\(model.data.numTestRecords) Test Samples")
+                            Text("\(Int(Double(model.data.numRecords) * self.newRatio) + 1) Train Samples")
+                            Text("\(model.data.numRecords - Int(Double(model.data.numRecords) * self.newRatio) - 1) Test Samples")
                         }
                         else {
                             Text("\(model.data.numTrainRecords) Train Samples")
@@ -39,13 +39,21 @@ struct ContentView: View {
                     Spacer()
                     HStack {
                         if self.changeRatio {
-                            Button(action: {
-                                self.changeRatio = false
-                            }) {
+                            Button(action: {}) {
                                 Text("Cancel")
+                            }.onTapGesture {
+                                self.changeRatio = false
+                                self.newRatio = Double(self.model.data.trainPercentage)
                             }
                         }
-                        Button(action: {
+                        Button(action: {}) {
+                            if changeRatio {
+                                Text("Confirm").foregroundColor(.red)
+                            }
+                            else {
+                                Text("Change")
+                            }
+                        }.onTapGesture {
                             if self.changeRatio {
                                 self.model.randomizeData(trainPercentage: Float(self.newRatio))
                                 self.changeRatio = false
@@ -53,20 +61,12 @@ struct ContentView: View {
                             else {
                                 self.changeRatio = true
                             }
-                            
-                        }) {
-                            if changeRatio {
-                                Text("Confirm").foregroundColor(.red)
-                            }
-                            else {
-                                Text("Change")
-                            }
                         }
                     }
                 }
                 if changeRatio {
                     HStack {
-                        Slider(value: $newRatio, in: 0.1...0.99, step: 0.01)
+                        Slider(value: $newRatio, in: 0.05...0.99, step: 0.01)
                     }
                 }
             }
