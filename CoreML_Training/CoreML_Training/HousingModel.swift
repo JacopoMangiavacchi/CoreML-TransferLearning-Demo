@@ -17,8 +17,8 @@ public struct HousingModel {
     
     var trained = false
     var data = HousingData()
-    var defaultModel: MLModel?
-    var retrainedModel: MLModel?
+    var defaultModel: MLModel? = s4tf_house_simplified_trained_model().model
+    var retrainedModel: MLModel? = s4tf_house_simplified_trainable_model().model
     
     mutating func randomizeData(trainPercentage: Float = 0.8) {
         data = HousingData(trainPercentage: trainPercentage)

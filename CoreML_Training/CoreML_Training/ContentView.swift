@@ -77,11 +77,27 @@ struct ContentView: View {
                 Text("TODO")
             }
             Section(header: Text("Inferencing")) {
-                Text("Test Sample Number \(Int(self.testSampleNumber) + 1)")
+                HStack {
+                    Text("Expected:")
+                    Spacer()
+                    Text(String(format: "%.2f", self.model.data.yTest[Int(self.testSampleNumber)][0]))
+                }
+                HStack {
+                    Text("Pre-Trained Model Prediction:")
+                    Spacer()
+                    Text(String(format: "%.2f", self.model.inference(testSample: Int(self.testSampleNumber))))
+                }
+                HStack {
+                    Text("Re-Trained Model Prediction:")
+                    Spacer()
+                    Text(String(format: "%.2f", self.model.inference(retrained: true, testSample: Int(self.testSampleNumber))))
+                }
+                HStack {
+                    Text("Sample Number:")
+                    Spacer()
+                    Text("\(Int(self.testSampleNumber) + 1)")
+                }
                 Slider(value: $testSampleNumber, in: 0.0...Double(self.model.data.numTestRecords - 1), step: 1.0)
-                Text("Pre-Trained Model Prediction: \(self.model.inference(testSample: Int(self.testSampleNumber)))")
-                Text("*Re-Trained Model Prediction: \(self.model.inference(retrained: true, testSample: Int(self.testSampleNumber)))")
-                Text("Expected: \(self.model.data.yTest[Int(self.testSampleNumber)][0])")
             }
         }
     }
