@@ -1,4 +1,4 @@
-# CoreML-EmbeddingMultiInputTraining
+# CoreML-TransferLearning-Demo
 
 Swift for TensorFlow Notebook and CoreML + SwiftUI demo App to demonstrate the potentiality of the SwiftCoreMLTools library (https://github.com/JacopoMangiavacchi/SwiftCoreMLTools) to adopt Transfer Learning technique and train on devices tabular data with multiple Numerical and Categorical Features using Embedding and Multi Input.
 
